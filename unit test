@@ -1,0 +1,21 @@
+import unittest
+
+class TestPCAPipeline(unittest.TestCase):
+    def setUp(self):
+        self.profiles = [
+            "I love astrophysics and long walks on the beach.",
+            "Quantum mechanics is my passion. I enjoy sci-fi.",
+            "Cooking and biology are my favorite hobbies.",
+            "I'm into chemistry and hiking in the mountains.",
+            "Machine learning and robotics fascinate me.",
+            "Data science is life. I'm also into physics."
+        ]
+        self.labels = [30, 35, 25, 28, 34, 32]
+
+    def test_pca_pipeline_accuracy(self):
+        from pca_project import pipeline  # Replace with correct module name
+        accuracy = pipeline(self.profiles, self.labels)
+        self.assertGreaterEqual(accuracy, 0.5, "Model accuracy should be at least 50%")
+
+if __name__ == '__main__':
+    unittest.main()
