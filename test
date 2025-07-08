@@ -1,0 +1,34 @@
+import pandas as pd
+import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+def preprocess_text(profiles):
+    vectorizer = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = vectorizer.fit_transform(profiles)
+    scaler = StandardScaler(with_mean=False)
+    return scaler.fit_transform(tfidf_matrix)
+
+def apply_pca(data, n_components=2):
+    pca = PCA(n_components=n_components)
+    return pca.fit_transform(data)
+
+def train_classifier(X_train, y_train):
+    clf = RandomForestClassifier(n_estimators=100, random_state=42)
+    clf.fit(X_train, y_train)
+    return clf
+
+def predict_and_score(clf, X_test, y_test):
+    predictions = clf.predict(X_test)
+    return accuracy_score(y_test, predictions)
+
+def pipeline(profiles, labels):
+    processed = preprocess_text(profiles)
+    reduced = apply_pca(processed)
+    X_train, X_test, y_train, y_test = train_test_split(reduced, labels, test_size=0.3, random_state=42)
+    clf = train_classifier(X_train, y_train)
+    return predict_and_score(clf, X_test, y_test)
