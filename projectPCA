@@ -7,3 +7,45 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 
+
+def main():
+    # Sample text data and labels (e.g., ages grouped as classes)
+    profiles = [
+        "I love astrophysics and long walks on the beach.",
+        "Quantum mechanics is my passion. I enjoy sci-fi.",
+        "Cooking and biology are my favorite hobbies.",
+        "I'm into chemistry and hiking in the mountains.",
+        "Machine learning and robotics fascinate me.",
+        "Data science is life. I'm also into physics."
+    ]
+    labels = [30, 35, 25, 28, 34, 32]  # Example age group
+
+    # Convert text data into TF-IDF matrix
+    vectorizer = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = vectorizer.fit_transform(profiles)
+
+    # Standardize the data (mean=0, variance=1)
+    scaler = StandardScaler(with_mean=False)
+    scaled_data = scaler.fit_transform(tfidf_matrix)
+
+    # Apply PCA
+    pca = PCA(n_components=2)  # Reduce to 2 dimensions
+    principal_components = pca.fit_transform(scaled_data.toarray())
+
+    # Train/test split
+    X_train, X_test, y_train, y_test = train_test_split(
+        principal_components, labels, test_size=0.3, random_state=42
+    )
+
+    # Classification with Random Forest
+    clf = RandomForestClassifier(n_estimators=100, random_state=42)
+    clf.fit(X_train, y_train)
+    y_pred = clf.predict(X_test)
+
+    # Output classification report
+    print("Classification Report:")
+    print(classification_report(y_test, y_pred))
+
+
+if __name__ == "__main__":
+    main()
